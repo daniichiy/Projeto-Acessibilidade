@@ -3,9 +3,13 @@ from tool.rastreador_de_url import gerar_resposta_json
 from tool.analisa_imagem import analisa  # Importar a função analisa do arquivo
 from tool.baixar_img import baixar, limpar_pasta_img  # Função para baixar as imagens
 from tool.gerar_relatorio import gerar_relatorio_docx  # Importar a função gerar_relatorio_auditoria do arquivo
+from tool.database import criar_tabela, salvar_relatorio  # Importar funções do módulo de banco
 import os
 
 def main():
+    # Cria a tabela no banco, se ainda não existir
+    criar_tabela()
+
     limpar_pasta_img() 
     # Solicitar a URL e a profundidade ao usuário
     url_alvo = input("Digite a URL do site para extração de links: ")
@@ -22,7 +26,7 @@ def main():
         else:
             print("Entrada inválida. Por favor, digite 's' para sim e 'n' para não.")
 
-      # Perguntar ao usuário o nome do arquivo para o relatório
+    # Perguntar ao usuário o nome do arquivo para o relatório
     nome_arquivo_docx = input("Digite o nome do arquivo para salvar o relatório DOCX (sem extensão): ") + ".docx"
     # Iniciar o processo de extração com a URL e profundidade fornecidas    
     print("Iniciando extração de links...")
@@ -46,7 +50,7 @@ def main():
             analise_resultado = analisa(link)
             
             # Verificar se há imagens sem o atributo 'alt' e tentar baixá-las
-            for imagem in analise_resultado['detalhes_imagens_sem_alt']:
+            for imagem in analise_resultado.get('detalhes_imagens_sem_alt', []):
                 img_url = imagem['img_url']
                 
                 # Verificar se a URL já foi baixada
@@ -56,12 +60,6 @@ def main():
                     # Baixar a imagem e salvar na pasta 'img'
                     baixar(img_url, nome_arquivo)
                     
-                    # # Gerar o texto alternativo usando a função da API GPT
-                    # texto_alternativo = gerar_texto_alternativo_com_api(nome_arquivo, contexto="governamental")
-                    
-                    # # Exibir o texto alternativo gerado
-                    # print(f"Sugestão de texto alternativo para {nome_arquivo}: {texto_alternativo}")
-                    
                     # Adicionar a URL da imagem ao conjunto de imagens baixadas
                     imagens_baixadas.add(img_url)
             
@@ -69,14 +67,21 @@ def main():
         except Exception as e:
             print(f"Erro ao analisar {link}: {e}")
 
-    # Converter o dicionário de resultados em JSON
-    # resultado_json = json.dumps(resultado_analises, indent=4)
-
     # Gerar o relatório de auditoria
     print("Gerando relatórios de auditoria...")
     gerar_relatorio_docx(resultado_analises, nome_arquivo_docx)
-    
-    print("Relatórios de auditoria gerados com sucesso!")
+
+    # Preparar dados para salvar no banco
+    total_imagens = 0
+    imagens_sem_alt = 0
+    for resultado in resultado_analises.values():
+        total_imagens += resultado.get('total_imagens', 0)
+        imagens_sem_alt += len(resultado.get('detalhes_imagens_sem_alt', []))
+
+    # Salvar os dados no banco de dados
+    salvar_relatorio(nome_arquivo_docx, os.path.abspath(nome_arquivo_docx), total_imagens, imagens_sem_alt)
+
+    print("Relatórios de auditoria gerados e salvos no banco de dados!")
 
 if __name__ == "__main__":
     main()
