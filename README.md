@@ -36,21 +36,40 @@ A acessibilidade digital é um direito fundamental, e este sistema busca identif
 - **Análise Recursiva de Links**:
   - O sistema também realiza a análise recursiva de links internos, permitindo a verificação de todas as páginas vinculadas dentro de um site, expandindo a abrangência da auditoria de acessibilidade.
 
+- **Armazenamento de Relatórios no Banco de Dados**:
+  - Os relatórios gerados são armazenados na pasta `relatorios_gerados` e registrados no banco de dados, garantindo um registro organizado das análises feitas.
 
 ---
 
 ## Como utilizar este projeto:
+
 1. Clone este repositório em sua máquina local:
-	```bash 
-    git clone https://github.com/fabioramos-02/agentes-crewai.git
+    ```bash
+    git clone https://github.com/daniichiy/Projeto-Acessibilidade.git
+    ```
 
-2. Importe as seguintes bibliotecas:
-	```bash
+2. Crie um ambiente virtual e instale as dependências necessárias:
+    ```bash
     pip install -r requirements.txt
+    ```
 
-3. Para rodar o projeto, digite: 
-	```bash
-    python main.py
+3. Configure o arquivo `.env` com as variáveis necessárias, como a chave secreta e a chave de CSRF:
+    - Crie um arquivo chamado `.env` na raiz do projeto.
+    - Defina as variáveis no arquivo `.env`:
+    ```plaintext
+    SECRET_KEY=SuaChaveSecretaAqui
+    CSRF_SECRET_KEY=SuaChaveCSRFAqui
+    ```
+
+4. Para rodar o projeto, digite:
+    ```bash
+    python app.py
+    ```
+
+5. Acesse o sistema através do navegador em:
+    ```plaintext
+    http://127.0.0.1:5000
+    ```
 
 ---
 
@@ -58,8 +77,14 @@ A acessibilidade digital é um direito fundamental, e este sistema busca identif
 
 As principais tecnologias e ferramentas usadas no desenvolvimento deste sistema incluem:
 
-- **Python** - Análise de dados e suporte ao multiagente
-- **WCAG 2.1** - Diretrizes Internacionais de Acessibilidade para Conteúdo Web
+- **Python**: Linguagem principal utilizada para o desenvolvimento do projeto.
+- **Flask**: Framework utilizado para criar o servidor web.
+- **Flask-WTF**: Extensão para trabalhar com formulários no Flask, incluindo proteção CSRF.
+- **WTForms**: Biblioteca para criação de formulários.
+- **SQLAlchemy**: ORM para interagir com o banco de dados PostgreSQL.
+- **PostgreSQL**: Banco de dados utilizado para armazenar informações dos relatórios.
+- **dotenv**: Para carregar variáveis de ambiente a partir do arquivo `.env`.
+- **WCAG 2.1**: Diretrizes Internacionais de Acessibilidade para Conteúdo Web.
 
 ---
 

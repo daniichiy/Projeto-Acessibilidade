@@ -5,8 +5,7 @@ python-docx==0.8.11
 Pillow==9.5.0
 fpdf==1.7.2
 urllib3==2.0.4
-sqlalchemy psycopg2-binary
-flask
-sqlalchemy
-psycopg2-binary
-python-dotenv
+sqlalchemy==2.0.0
+psycopg2-binary==2.9.3
+flask==2.1.2
+python-dotenv==0.19.2
