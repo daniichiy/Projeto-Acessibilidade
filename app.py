@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 import os
 import json
 
-
 # Carrega as variáveis do arquivo .env
 load_dotenv()
 
@@ -75,8 +74,12 @@ def index():
             except Exception as e:
                 print(f"Erro ao analisar {link}: {e}")
 
+        # Definindo o caminho para salvar o relatório na pasta 'relatorios_gerados'
+        pasta_relatorios = 'relatorios_gerados'
+        os.makedirs(pasta_relatorios, exist_ok=True)  # Garante que a pasta existe
+
         # Gerar o relatório de auditoria com o nome do usuário
-        nome_arquivo_docx = f"{relatorio_nome}.docx"  # Usando o nome informado pelo usuário
+        nome_arquivo_docx = os.path.join(pasta_relatorios, f"{relatorio_nome}.docx")  # Usando o nome informado pelo usuário e o caminho da pasta
         gerar_relatorio_docx(resultado_analises, nome_arquivo_docx)
 
         # Salvar as informações no banco de dados
